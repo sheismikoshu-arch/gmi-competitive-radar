@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin · GMI Competitive Radar</title>
+<link rel="stylesheet" href="styles.css?v=9">
+<style>
+  .form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+  .form label { display: flex; flex-direction: column; gap: 5px; font-size: 12.5px; color: var(--text-2); }
+  .form .full { grid-column: 1 / -1; }
+  .form input, .form select { width: 100%; }
+  .checks { display: flex; flex-wrap: wrap; gap: 8px; }
+  .checks label { flex-direction: row; align-items: center; gap: 6px; }
+  .row-actions { display: flex; gap: 6px; }
+  .check { display: grid; grid-template-columns: 22px 1fr auto auto; gap: 10px; align-items: center; padding: 9px 0; border-top: 1px solid var(--border); }
+  .check:first-child { border-top: 0; }
+  .steps { margin: 0; padding-left: 18px; color: var(--text-2); font-size: 13px; }
+  .steps li { margin: 5px 0; }
+  code { background: rgba(255,255,255,.08); padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><div class="logo">GMI</div>Competitive Radar <small>Admin</small></div>
+  <nav class="tabs" id="tabs">
+    <button data-tab="items" class="active">Moves</button>
+    <button data-tab="weekly">Weekly checklist</button>
+    <button data-tab="competitors">Competitors</button>
+    <button data-tab="publish">Import / publish</button>
+  </nav>
+  <div class="spacer"></div>
+  <a class="btn sm" href="index.html">← Dashboard</a>
+</header>
+
+<main class="wrap">
+  <div class="banner hidden" id="draftBanner"><b>Unpublished changes</b><span id="draftInfo"></span><div class="spacer"></div><button class="btn sm primary" data-goto="publish">Publish</button></div>
+
+  <!-- MOVES -->
+  <section id="v-items">
+    <div class="filters">
+      <button class="btn primary" id="addBtn">+ Add move</button>
+      <select id="aComp"></select>
+      <input type="search" id="aQ" placeholder="Search…" style="min-width:220px">
+      <span class="range-label" id="aCount"></span>
+    </div>
+    <div class="card" id="editor" style="margin-bottom:16px; display:none">
+      <div style="display:flex;align-items:flex-start"><div style="flex:1"><h3 id="edTitle">Add move</h3><div class="sub">Saved changes show on your dashboard right away. Your team sees them after you publish.</div></div><button class="btn sm" id="edCancel">Cancel</button></div>
+      <form class="form" id="edForm" autocomplete="off">
+        <label>Competitor *<select name="competitor" required></select></label>
+        <label>Date *<input type="date" name="date" required></label>
+        <label>Category *<select name="category" required></select></label>
+        <label>GMI product line *<select name="product" required></select></label>
+        <label>Impact *<select name="impact" required><option>High</option><option selected>Medium</option><option>Low</option></select></label>
+        <label>Source<input type="text" name="source" placeholder="e.g. CoreWeave Newsroom"></label>
+        <label class="full">Source URL *<input type="url" name="url" required placeholder="https://"></label>
+        <label class="full">Title *<input type="text" name="title" required placeholder="Use the official headline"></label>
+        <label class="full">Why it matters for GMI<textarea name="takeaway_en" rows="2" placeholder="One sentence: what this means for GMI marketing / product"></textarea></label>
+        <div class="full"><div style="font-size:12.5px;color:var(--text-2);margin-bottom:6px">Trends</div><div class="checks" id="themeBoxes"></div></div>
+        <label style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" name="verified" style="width:auto;min-height:0"> Source verified</label>
+        <div class="full" style="display:flex;gap:8px"><button class="btn primary" type="submit">Save</button></div>
+      </form>
+    </div>
+    <div class="card" style="overflow-x:auto"><table class="data" id="itemTable"></table></div>
+  </section>
+
+  <!-- WEEKLY -->
+  <section id="v-weekly" class="hidden">
+    <div class="grid two">
+      <div class="card">
+        <h3>This week's checklist <span class="muted" id="wkRange" style="font-weight:500"></span></h3>
+        <div class="sub">Open each official source, then tick it off. Ticks are saved in this browser only.</div>
+        <div id="checklist"></div>
+      </div>
+      <div class="card">
+        <h3>Weekly process</h3>
+        <ol class="steps">
+          <li>An automated run checks every competitor each Thursday (see <code>WEEKLY_COLLECTION.md</code>).</li>
+          <li>Also scan X / LinkedIn, TechCrunch, The Information and SemiAnalysis for what blogs miss.</li>
+          <li>Log product, pricing, GPU, region and partnership moves. Skip hiring, events and pure tutorials.</li>
+          <li>Every move needs a source URL and one "why it matters for GMI" sentence.</li>
+          <li><b>High</b> = hits a core GMI claim or buyer decision. <b>Medium</b> = worth tracking. <b>Low</b> = FYI.</li>
+          <li>Publish: export <code>data.js</code> and replace the file on the server.</li>
+          <li>Refresh <code>insights.js</code> monthly, or when a trend shifts.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPETITORS -->
+  <section id="v-competitors" class="hidden">
+    <div class="grid two">
+      <div class="card" style="overflow-x:auto">
+        <h3>Tracked competitors</h3><div class="sub">Web traffic: paste numbers from your Similarweb / Semrush account. They appear on the Players tab.</div>
+        <table class="data" id="compTable"></table>
+      </div>
+      <div class="card" style="align-self:start">
+        <h3>Add competitor</h3>
+        <form class="form" id="compForm" autocomplete="off">
+          <label>Name *<input type="text" name="name" required></label>
+          <label>Segment *<input type="text" name="segment" list="segList" required></label>
+          <label class="full">Official news / blog URL<input type="url" name="site" placeholder="https://"></label>
+          <div class="full checks" id="overlapBoxes"></div>
+          <div class="full"><button class="btn primary" type="submit">Add</button></div>
+        </form>
+        <datalist id="segList"></datalist>
+      </div>
+    </div>
+  </section>
+
+  <!-- PUBLISH -->
+  <section id="v-publish" class="hidden">
+    <div class="grid g2">
+      <div class="card">
+        <h3>Publish to the team</h3>
+        <div class="sub">The dashboard reads <code>data.js</code>. Your edits live in this browser as a draft until you replace that file.</div>
+        <ol class="steps"><li>Export <code>data.js</code>.</li><li>Replace <code>data.js</code> in the dashboard folder (or commit it to the hosting repo).</li><li>Clear the local draft so you see what the team sees.</li></ol>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
+          <button class="btn primary" id="expJs">Export data.js</button>
+          <button class="btn" id="expJson">Export JSON backup</button>
+          <button class="btn danger" id="discard">Clear local draft</button>
+        </div>
+        <div class="muted" id="pubInfo" style="margin-top:10px;font-size:12.5px"></div>
+      </div>
+      <div class="card">
+        <h3>Bulk import</h3>
+        <div class="sub">Paste a JSON array of moves (or a full exported JSON). Deduped by id or URL; existing moves are updated.</div>
+        <textarea id="impText" rows="9" placeholder='[{"competitor":"Together AI","date":"2026-10-28","title":"...","category":"Feature","product":"inference","impact":"High","themes":["posttrain"],"takeaway_en":"...","url":"https://..."}]'></textarea>
+        <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+          <button class="btn primary" id="impBtn">Import</button>
+          <label class="btn">Choose file<input type="file" id="impFile" accept=".json,application/json" hidden></label>
+          <span class="muted" id="impMsg" style="font-size:12.5px"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script src="data.js?v=9"></script>
+<script src="insights.js?v=9"></script>
+<script src="store.js?v=9"></script>
+<script>
+(function () {
+  let { data, isDraft } = CI.load();
+  const esc = CI.esc, $ = (s) => document.querySelector(s);
+  const TR = window.CI_INSIGHTS.trends;
+  const trName = Object.fromEntries(TR.map((t) => [t.id, t.name]));
+  const prodName = () => Object.fromEntries(data.gmiProducts.map((p) => [p.id, p.name]));
+  const opt = (v, t) => `<option value="${esc(v)}">${esc(t)}</option>`;
+  let editingId = null;
+
+  function toast(m) { const t = $("#toast"); t.textContent = m; t.style.display = "block"; clearTimeout(t._h); t._h = setTimeout(() => (t.style.display = "none"), 2200); }
+  function commit(msg) { CI.save(data); isDraft = true; refreshBanner(); if (msg) toast(msg); }
+  function refreshBanner() {
+    $("#draftBanner").classList.toggle("hidden", !isDraft);
+    if (isDraft) {
+      const seedIds = new Set(window.CI_SEED.items.map((i) => i.id));
+      const added = data.items.filter((i) => !seedIds.has(i.id)).length;
+      $("#draftInfo").textContent = `Local draft: ${data.items.length} moves (${added} new; published version has ${window.CI_SEED.items.length}). Your team still sees the published version.`;
+    }
+  }
+
+  function showTab(t) {
+    document.querySelectorAll("#tabs button").forEach((b) => b.classList.toggle("active", b.dataset.tab === t));
+    ["items", "weekly", "competitors", "publish"].forEach((x) => $("#v-" + x).classList.toggle("hidden", x !== t));
+    ({ items: renderItems, weekly: renderWeekly, competitors: renderComps, publish: renderPublish })[t]();
+  }
+  $("#tabs").onclick = (e) => e.target.dataset.tab && showTab(e.target.dataset.tab);
+  document.addEventListener("click", (e) => { const g = e.target.closest("[data-goto]"); if (g) showTab(g.dataset.goto); });
+
+  /* ---------- moves ---------- */
+  function fillSelects() {
+    $("#aComp").innerHTML = opt("", "All competitors") + data.competitors.map((c) => opt(c.name, c.name)).join("");
+    const f = $("#edForm");
+    f.competitor.innerHTML = data.competitors.map((c) => opt(c.name, c.name)).join("");
+    f.category.innerHTML = data.categories.map((c) => opt(c, c)).join("");
+    f.product.innerHTML = data.gmiProducts.map((p) => opt(p.id, p.name)).join("");
+    $("#themeBoxes").innerHTML = TR.map((t) => `<label class="tchip" style="--c:${t.color}"><input type="checkbox" name="themes" value="${t.id}" style="width:auto;min-height:0">${esc(t.name)}</label>`).join("");
+  }
+  function renderItems() {
+    const comp = $("#aComp").value, q = $("#aQ").value.toLowerCase(), pn = prodName();
+    const rows = data.items.filter((i) => (!comp || i.competitor === comp) && (!q || JSON.stringify(i).toLowerCase().includes(q))).sort((a, b) => b.date.localeCompare(a.date));
+    $("#aCount").textContent = `${rows.length} / ${data.items.length} moves`;
+    $("#itemTable").innerHTML = `<thead><tr><th>Date</th><th>Competitor</th><th>Title</th><th>Trends</th><th>Line</th><th>Impact</th><th></th></tr></thead><tbody>` +
+      (rows.length ? rows.map((i) => `<tr>
+        <td style="white-space:nowrap">${esc(i.date)}</td><td><b>${esc(i.competitor)}</b></td>
+        <td>${esc(i.title)}<div class="muted" style="font-size:12px">${i.url ? `<a href="${esc(i.url)}" target="_blank" rel="noopener">${esc(i.source || "Source")} ↗</a>` : '<span style="color:var(--bad)">Missing URL</span>'}${i.takeaway_en ? "" : ' · <span style="color:var(--warn)">No "why it matters"</span>'}</div></td>
+        <td>${(i.themes || []).map((t) => `<span class="badge">${esc(trName[t] || t)}</span>`).join(" ") || '<span style="color:var(--warn);font-size:12px">Untagged</span>'}</td>
+        <td><span class="badge">${esc(pn[i.product] || i.product)}</span></td>
+        <td><span class="imp ${esc(i.impact)}">${esc(i.impact)}</span></td>
+        <td><div class="row-actions"><button class="btn sm" data-edit="${esc(i.id)}">Edit</button><button class="btn sm danger" data-del="${esc(i.id)}">Delete</button></div></td></tr>`).join("")
+        : `<tr><td colspan="7" class="empty">No moves</td></tr>`) + "</tbody>";
+  }
+  $("#aComp").oninput = renderItems; $("#aQ").oninput = renderItems;
+  $("#itemTable").onclick = (e) => {
+    const ed = e.target.dataset.edit, del = e.target.dataset.del;
+    if (ed) openEditor(ed);
+    if (del) { const it = data.items.find((i) => i.id === del); if (it && confirm(`Delete "${it.title}"?\n(Only affects your draft until you publish.)`)) { data.items = data.items.filter((i) => i.id !== del); commit("Deleted"); renderItems(); } }
+  };
+  function openEditor(id) {
+    editingId = id || null; const f = $("#edForm"); f.reset();
+    const it = id ? data.items.find((i) => i.id === id) : null;
+    $("#edTitle").textContent = it ? "Edit move" : "Add move";
+    if (it) {
+      ["competitor", "date", "category", "product", "impact", "source", "url", "title", "takeaway_en"].forEach((k) => (f[k].value = it[k] || ""));
+      f.verified.checked = !!it.verified;
+      f.querySelectorAll("input[name=themes]").forEach((b) => (b.checked = (it.themes || []).includes(b.value)));
+    } else { f.date.value = CI.isoDate(new Date()); f.verified.checked = true; }
+    $("#editor").style.display = "block"; $("#editor").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  $("#addBtn").onclick = () => openEditor();
+  $("#edCancel").onclick = () => { $("#editor").style.display = "none"; editingId = null; };
+  $("#edForm").onsubmit = (e) => {
+    e.preventDefault(); const f = e.target, v = (k) => f[k].value.trim();
+    const it = { competitor: v("competitor"), date: v("date"), category: v("category"), product: v("product"), impact: v("impact"), source: v("source"), url: v("url"), title: v("title"), takeaway_en: v("takeaway_en"),
+      themes: [...f.querySelectorAll("input[name=themes]:checked")].map((b) => b.value), verified: f.verified.checked };
+    if (editingId) { const idx = data.items.findIndex((i) => i.id === editingId); data.items[idx] = { ...data.items[idx], ...it }; }
+    else {
+      const dup = data.items.find((i) => i.url && i.url === it.url);
+      if (dup && !confirm(`A move with this URL already exists ("${dup.title}"). Add anyway?`)) return;
+      it.id = `${it.competitor.toLowerCase().replace(/[^a-z0-9]+/g, "")}-${it.date.replace(/-/g, "")}-${Math.random().toString(36).slice(2, 7)}`;
+      data.items.push(it);
+    }
+    commit(editingId ? "Saved" : "Added"); $("#editor").style.display = "none"; editingId = null; renderItems();
+  };
+
+  /* ---------- weekly ---------- */
+  function renderWeekly() {
+    const ws = CI.weekStart(new Date()), we = CI.addDays(ws, 6), key = "gmi-ci-check-" + CI.isoDate(ws);
+    const done = JSON.parse(localStorage.getItem(key) || "{}");
+    $("#wkRange").textContent = `${CI.isoDate(ws)} – ${CI.isoDate(we)} · ${Object.values(done).filter(Boolean).length} / ${data.competitors.length} checked`;
+    $("#checklist").innerHTML = data.competitors.map((c) => {
+      const n = data.items.filter((i) => i.competitor === c.name && CI.parse(i.date) >= ws && CI.parse(i.date) <= we).length;
+      return `<div class="check"><input type="checkbox" data-c="${esc(c.name)}" ${done[c.name] ? "checked" : ""} aria-label="${esc(c.name)} checked">
+        <div><b>${esc(c.name)}</b> <span class="muted" style="font-size:12px">${esc(c.segment)}</span></div>
+        <span class="badge ${n ? "ok" : ""}">${n} this week</span>
+        ${c.site ? `<a class="btn sm" href="${esc(c.site)}" target="_blank" rel="noopener">Open ↗</a>` : "<span></span>"}</div>`;
+    }).join("");
+    $("#checklist").querySelectorAll("input").forEach((cb) => (cb.onchange = () => { done[cb.dataset.c] = cb.checked; localStorage.setItem(key, JSON.stringify(done)); renderWeekly(); }));
+  }
+
+  /* ---------- competitors ---------- */
+  function renderComps() {
+    const pn = prodName();
+    $("#compTable").innerHTML = `<thead><tr><th>Competitor</th><th>Overlap</th><th>Monthly visits</th><th>MoM</th><th>Month</th><th class="num">Moves</th><th></th></tr></thead><tbody>` +
+      data.competitors.map((c, i) => { const t = c.traffic || {}; return `<tr><td><b>${esc(c.name)}</b><div class="muted" style="font-size:12px">${esc(c.segment)}</div></td>
+        <td>${c.overlap.map((o) => `<span class="badge">${esc(pn[o] || o)}</span>`).join(" ")}</td>
+        <td><input type="text" data-i="${i}" data-k="visits" value="${esc(t.visits || "")}" placeholder="e.g. 998K" style="width:90px"></td>
+        <td><input type="text" data-i="${i}" data-k="mom" value="${esc(t.mom || "")}" placeholder="+27%" style="width:70px"></td>
+        <td><input type="text" data-i="${i}" data-k="month" value="${esc(t.month || "")}" placeholder="Sep 2026" style="width:90px"></td>
+        <td class="num">${data.items.filter((x) => x.competitor === c.name).length}</td>
+        <td><button class="btn sm danger" data-rm="${i}">Remove</button></td></tr>`; }).join("") + "</tbody>";
+    $("#compTable").querySelectorAll("input[data-k]").forEach((inp) => (inp.onchange = () => {
+      const c = data.competitors[+inp.dataset.i]; c.traffic = { ...(c.traffic || {}), [inp.dataset.k]: inp.value.trim(), topCountry: (c.traffic || {}).topCountry || "" }; commit("Traffic saved");
+    }));
+    $("#segList").innerHTML = [...new Set(data.competitors.map((c) => c.segment))].map((s) => `<option value="${esc(s)}">`).join("");
+    $("#overlapBoxes").innerHTML = '<span class="muted" style="font-size:12.5px">Overlaps GMI on:</span>' + data.gmiProducts.filter((p) => p.id !== "multi").map((p) => `<label><input type="checkbox" name="ov" value="${esc(p.id)}" style="width:auto;min-height:0">${esc(p.name)}</label>`).join("");
+  }
+  $("#compTable").onclick = (e) => {
+    const i = e.target.dataset.rm; if (i === undefined) return;
+    const c = data.competitors[+i];
+    if (confirm(`Remove ${c.name}? Its moves stay in the data.`)) { data.competitors.splice(+i, 1); commit("Removed"); fillSelects(); renderComps(); }
+  };
+  $("#compForm").onsubmit = (e) => {
+    e.preventDefault(); const f = e.target, name = f.name.value.trim();
+    if (data.competitors.some((c) => c.name.toLowerCase() === name.toLowerCase())) { toast("Already tracked"); return; }
+    data.competitors.push({ name, segment: f.segment.value.trim(), site: f.site.value.trim(), overlap: [...f.querySelectorAll("input[name=ov]:checked")].map((x) => x.value) });
+    commit(`Added ${name}`); f.reset(); fillSelects(); renderComps();
+  };
+
+  /* ---------- import / publish ---------- */
+  function renderPublish() {
+    $("#pubInfo").textContent = isDraft ? `Draft: ${data.items.length} moves · Published: ${window.CI_SEED.items.length} (${window.CI_SEED.updatedAt})` : `In sync with the published version (${window.CI_SEED.updatedAt}, ${window.CI_SEED.items.length} moves)`;
+  }
+  $("#expJs").onclick = () => { CI.download("data.js", CI.exportDataJs(data), "text/javascript"); toast("Exported data.js"); };
+  $("#expJson").onclick = () => CI.download(`gmi-radar-backup-${CI.isoDate(new Date())}.json`, JSON.stringify(data, null, 2), "application/json");
+  $("#discard").onclick = () => { if (!confirm("Clear the local draft and return to the published version? Unexported edits will be lost.")) return; CI.discardDraft(); ({ data, isDraft } = CI.load()); fillSelects(); refreshBanner(); renderPublish(); toast("Back to published version"); };
+  function importText(txt) {
+    let parsed; try { parsed = JSON.parse(txt); } catch (err) { $("#impMsg").textContent = "Invalid JSON: " + err.message; return; }
+    const arr = Array.isArray(parsed) ? parsed : parsed.items;
+    if (!Array.isArray(arr)) { $("#impMsg").textContent = "No array of moves found"; return; }
+    const prodIds = new Set(data.gmiProducts.map((p) => p.id));
+    let added = 0, updated = 0, skipped = 0;
+    arr.forEach((raw) => {
+      if (!raw || !raw.competitor || !raw.title || !/^\d{4}-\d{2}-\d{2}$/.test(raw.date || "")) { skipped++; return; }
+      const it = { impact: "Medium", category: "Feature", product: "multi", themes: [], verified: false, ...raw };
+      if (!prodIds.has(it.product)) it.product = "multi";
+      if (!data.competitors.some((c) => c.name === it.competitor)) data.competitors.push({ name: it.competitor, segment: "Other", overlap: [], site: "" });
+      const idx = it.id ? data.items.findIndex((x) => x.id === it.id) : data.items.findIndex((x) => x.url && x.url === it.url);
+      if (idx >= 0) { data.items[idx] = { ...data.items[idx], ...it, id: data.items[idx].id }; updated++; }
+      else { it.id = it.id || `${it.competitor.toLowerCase().replace(/[^a-z0-9]+/g, "")}-${it.date.replace(/-/g, "")}-${Math.random().toString(36).slice(2, 7)}`; data.items.push(it); added++; }
+    });
+    commit(); fillSelects(); renderPublish();
+    $("#impMsg").textContent = `${added} added, ${updated} updated${skipped ? `, ${skipped} skipped (missing competitor / date / title)` : ""}`;
+  }
+  $("#impBtn").onclick = () => importText($("#impText").value);
+  $("#impFile").onchange = (e) => { const f = e.target.files[0]; if (f) f.text().then(importText); };
+
+  fillSelects(); refreshBanner(); showTab("items");
+})();
+</script>
+</body>
+</html>

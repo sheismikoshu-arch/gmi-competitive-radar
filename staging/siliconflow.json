@@ -1,0 +1,9 @@
+[
+  {"competitor":"SiliconFlow","date":"2026-09-28","category":"Model Launch","product":"inference","impact":"Low",
+   "title":"Tencent Hy4 Preview available on SiliconFlow (1M context)",
+   "title_zh":"腾讯 Hy4 Preview 上线 SiliconFlow（100 万上下文）",
+   "summary_zh":"SiliconFlow 上线腾讯 Hy4 Preview（MoE 架构，100 万上下文），并在官网横幅重点推广。近一个月其博客以模型接入教程和 SEO 内容为主，例如 10/29 的《Serverless 推理 vs 预留 GPU》，未见重大产品发布。",
+   "takeaway_zh":"SiliconFlow 在海外主要靠中国模型首发和教程内容获客。GMI 可关注腾讯、DeepSeek、GLM 等新模型的上架时效。",
+   "source":"SiliconFlow Blog","url":"https://www.siliconflow.com/blog/tencent-hy4-preview-context-api-guide",
+   "tags":["模型上架","腾讯 Hy4","SEO 内容"],"verified":true}
+]

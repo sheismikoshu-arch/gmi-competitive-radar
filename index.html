@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GMI Cloud · Competitive Radar</title>
+<link rel="stylesheet" href="styles.css?v=9">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><div class="logo">GMI</div>Competitive Radar <small>AI Cloud Market Intelligence</small></div>
+  <nav class="tabs" id="tabs">
+    <button data-tab="insights" class="active">Insights</button>
+    <button data-tab="product">Product lens</button>
+    <button data-tab="marketing">Marketing lens</button>
+    <button data-tab="players">Players</button>
+    <button data-tab="feed">Live feed</button>
+  </nav>
+  <div class="spacer"></div>
+  <button class="btn sm" id="copyBrief" title="Copy an English brief as Markdown">Copy brief</button>
+  <a class="btn sm" href="admin.html">Admin</a>
+</header>
+
+<main class="wrap">
+  <div class="banner hidden" id="draftBanner"><b>Draft</b><span>You're viewing unpublished edits from this browser. Your team sees the published version.</span><div class="spacer"></div><a class="btn sm" href="admin.html">Publish</a></div>
+
+  <!-- ================= INSIGHTS ================= -->
+  <section id="v-insights">
+    <div class="hero">
+      <div class="chip-row"><span class="pill"><span class="live"></span>Market pulse</span><span class="pill" id="period"></span><span class="pill" id="coverage"></span></div>
+      <h1 id="headline"></h1>
+      <p class="lede" id="subhead"></p>
+      <div class="stats" id="stats"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><div><div class="kicker">The big picture</div><h2>8 shifts reshaping the AI cloud market</h2></div><p>Click a shift for evidence and what it means for GMI</p></div>
+      <div class="trends" id="trends"></div>
+      <div id="trendDetail"></div>
+    </div>
+
+    <div class="section grid two">
+      <div class="card">
+        <div class="kicker">Positioning</div><h3>Where everyone is heading</h3>
+        <div class="sub">Analyst view · dot = today, arrow = direction of recent launches</div>
+        <div class="chart" id="map"></div>
+        <div class="legend" id="mapLegend"></div>
+      </div>
+      <div class="grid" style="align-content:start">
+        <div class="card">
+          <div class="kicker">Messaging</div><h3>What they claim on their homepages</h3>
+          <div class="sub">Positioning lanes across 14 competitors</div>
+          <div id="messaging"></div>
+        </div>
+        <div class="card">
+          <div class="kicker">Day-0 race</div><h3 id="raceTitle"></h3>
+          <div class="sub">Who hosted the latest major open model first</div>
+          <div id="race"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section card">
+      <div class="section-head" style="margin-bottom:6px"><div><div class="kicker">Focus map</div><h2 style="font-size:17px">Who is betting on what</h2></div><p>Bubble size = number of moves (last 90 days) · click to see them</p></div>
+      <div style="overflow-x:auto"><table class="matrix" id="matrix"></table></div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><div><div class="kicker">So what for GMI</div><h2>Playbook</h2></div></div>
+      <div class="grid g2">
+        <div class="card pb-card" style="--c:#9085e9"><h3>Product marketing</h3><div class="sub">Positioning, messaging and proof</div><ol class="play" id="pmm" style="--c:#9085e9"></ol></div>
+        <div class="card pb-card" style="--c:#199e70"><h3>Product</h3><div class="sub">Roadmap gaps to close</div><ol class="play" id="prod" style="--c:#199e70"></ol></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><div><div class="kicker">Next 30 days</div><h2>Watchlist</h2></div></div>
+      <div class="watch" id="watch"></div>
+    </div>
+  </section>
+
+  <!-- ================= PRODUCT LENS ================= -->
+  <section id="v-product" class="hidden">
+    <div class="lens-hero" style="--c1:#199e70;--c2:#3987e5">
+      <div class="kicker">For the product team</div>
+      <h1>What competitors are shipping</h1>
+      <p class="lede">Capabilities launched Aug–Oct 2026, mapped to GMI's product lines. Use it for roadmap and parity reviews.</p>
+      <div class="takeaways" id="prodTk"></div>
+    </div>
+    <div class="section card">
+      <div class="section-head" style="margin-bottom:4px"><div><div class="kicker">Capability adoption</div><h2 style="font-size:17px">Table stakes vs. white space</h2></div>
+        <p>Dots = competitors that shipped it · click a name for the source</p></div>
+      <div class="legend" id="capLegend" style="margin:0 0 6px"></div>
+      <div style="overflow-x:auto"><table class="capgrid" id="capGrid"></table></div>
+    </div>
+    <div class="section card">
+      <div class="section-head" style="margin-bottom:4px"><div><div class="kicker">Shipping timeline</div><h2 style="font-size:17px">Product moves by GMI product line</h2></div><p>Color = trend · hover for details, click to open</p></div>
+      <div class="chart" id="lanes"></div>
+      <div class="legend" id="lanesLegend"></div>
+    </div>
+    <div class="section card">
+      <div class="section-head" style="margin-bottom:4px"><div><div class="kicker">Direction</div><h2 style="font-size:17px">Where each competitor is investing</h2></div><p>Product moves in the last 90 days, by GMI line</p></div>
+      <div style="overflow-x:auto"><table class="data" id="prodTable"></table></div>
+    </div>
+  </section>
+
+  <!-- ================= MARKETING LENS ================= -->
+  <section id="v-marketing" class="hidden">
+    <div class="lens-hero" style="--c1:#9085e9;--c2:#d55181">
+      <div class="kicker">For the marketing team</div>
+      <h1>How competitors are telling their story</h1>
+      <p class="lede">Launch moments, go-to-market tactics and positioning, plus what GMI should borrow, counter or own.</p>
+      <div class="takeaways five" id="mktTk"></div>
+    </div>
+    <div class="section card">
+      <div class="section-head" style="margin-bottom:4px"><div><div class="kicker">Marketing calendar</div><h2 style="font-size:17px">The moments that shaped the narrative</h2></div><p>Filled = happened · hollow = upcoming</p></div>
+      <div class="chart" id="moments"></div>
+    </div>
+    <div class="section card">
+      <div class="section-head" style="margin-bottom:4px"><div><div class="kicker">GTM playbook</div><h2 style="font-size:17px">Which tactics each competitor uses</h2></div><p>Hover a dot for the example · click to open it</p></div>
+      <div style="overflow-x:auto"><table class="tacgrid" id="tacGrid"></table></div>
+    </div>
+    <div class="section">
+      <div class="section-head"><div><div class="kicker">Narratives</div><h2>The story each competitor is telling this quarter</h2></div></div>
+      <div class="stories" id="stories"></div>
+    </div>
+  </section>
+
+  <!-- ================= PLAYERS ================= -->
+  <section id="v-players" class="hidden">
+    <div class="section-head"><div><div class="kicker">Competitor profiles</div><h2>Positioning, direction and threat to GMI</h2></div><p>Threat = overlap with GMI product lines (analyst view)</p></div>
+    <div class="players" id="players"></div>
+  </section>
+
+  <!-- ================= FEED ================= -->
+  <section id="v-feed" class="hidden">
+    <div class="filters" id="trendChips"></div>
+    <div class="filters">
+      <div class="seg" id="periodSeg">
+        <button data-p="thisweek">This week</button><button data-p="lastweek">Last week</button><button data-p="30d" class="active">30 days</button><button data-p="90d">90 days</button><button data-p="all">All</button>
+      </div>
+      <select id="fComp" aria-label="Competitor"></select>
+      <select id="fImp" aria-label="Impact"><option value="">All impact</option><option>High</option><option>Medium</option><option>Low</option></select>
+      <input type="search" id="fQ" placeholder="Search…" style="min-width:200px">
+      <button class="btn sm" id="reset">Reset</button>
+      <span class="range-label" id="rangeLabel"></span>
+    </div>
+    <div class="feed" id="feed"></div>
+  </section>
+
+  <div class="foot" id="foot"></div>
+</main>
+<div class="tooltip" id="tip"></div>
+<div class="toast" id="toast"></div>
+
+<script src="data.js?v=9"></script>
+<script src="insights.js?v=9"></script>
+<script src="store.js?v=9"></script>
+<script>
+(function () {
+  const { data, isDraft } = CI.load();
+  const I = window.CI_INSIGHTS;
+  const esc = CI.esc, $ = (s) => document.querySelector(s);
+  const today = new Date();
+  const byId = Object.fromEntries(data.items.map((i) => [i.id, i]));
+  const T = Object.fromEntries(I.trends.map((t) => [t.id, t]));
+  const trendOf = (it) => T[(it.themes || [])[0]] || { color: "#8e8d86", name: "Other" };
+  const short = (d) => { const x = CI.parse(d); return x.toLocaleString("en-US", { month: "short" }) + " " + x.getDate(); };
+  const state = { tab: "insights", period: "30d", comp: "", imp: "", q: "", trends: new Set(), openTrend: null };
+  const tip = $("#tip");
+  const showTip = (e, html) => { tip.innerHTML = html; tip.style.display = "block"; tip.style.left = Math.min(e.clientX + 14, innerWidth - 340) + "px"; tip.style.top = e.clientY + 14 + "px"; };
+  const hideTip = () => (tip.style.display = "none");
+  if (isDraft) $("#draftBanner").classList.remove("hidden");
+
+  const segColor = { neo: "#3987e5", inf: "#9085e9", chip: "#c98500", rl: "#199e70", gmi: "#ffffff" };
+  const segName = { neo: "GPU neocloud", inf: "Inference platform", chip: "Specialty silicon", rl: "RL-native", gmi: "GMI Cloud" };
+  const segOf = Object.fromEntries(I.map.map((m) => [m.name, m.seg]));
+  const avatar = (name, sm) => { const c = segColor[segOf[name]] || "#6d6c66"; return `<div class="avatar" style="${sm ? "width:26px;height:26px;font-size:10px;border-radius:7px;" : ""}background:linear-gradient(135deg, ${c}, color-mix(in srgb, ${c} 45%, #0a0d14))">${esc(name.replace(/[^A-Za-z]/g, "").slice(0, 2))}</div>`; };
+
+  /* ================= INSIGHTS ================= */
+  function renderInsights() {
+    $("#period").textContent = I.period;
+    $("#coverage").textContent = `${data.competitors.length} competitors · ${data.items.length} sourced moves`;
+    $("#headline").textContent = I.headline;
+    $("#subhead").textContent = I.subhead;
+    $("#stats").innerHTML = I.stats.map((s) => `<div class="stat" style="--c:${T[s.trend].color}"><div class="v">${esc(s.value)}</div><div class="l">${esc(s.label)}</div></div>`).join("");
+
+    // trend cards
+    const since = CI.addDays(today, -90);
+    const playersFor = (tid) => [...new Set(data.items.filter((i) => (i.themes || []).includes(tid) && CI.parse(i.date) >= since).map((i) => i.competitor))];
+    $("#trends").innerHTML = I.trends.map((t) => {
+      const ps = playersFor(t.id);
+      return `<div class="trend ${state.openTrend === t.id ? "open" : ""}" style="--c:${t.color}" data-trend="${t.id}" tabindex="0" role="button" aria-expanded="${state.openTrend === t.id}">
+        <div class="ic">${t.icon}</div><h3>${esc(t.name)}</h3><p>${esc(t.oneLiner)}</p>
+        <div class="momentum">${[1, 2, 3, 4, 5].map((n) => `<i class="${n <= t.momentum ? "on" : ""}"></i>`).join("")}<span>${["", "Early", "Emerging", "Building", "Strong", "Hot"][t.momentum]}</span></div>
+        <div class="logos">${ps.slice(0, 6).map((p) => `<span class="mini">${esc(p)}</span>`).join("")}${ps.length > 6 ? `<span class="mini">+${ps.length - 6}</span>` : ""}</div>
+      </div>`;
+    }).join("");
+    $("#trends").querySelectorAll(".trend").forEach((el) => {
+      const go = () => { state.openTrend = state.openTrend === el.dataset.trend ? null : el.dataset.trend; renderInsights(); if (state.openTrend) $("#trendDetail").scrollIntoView({ behavior: "smooth", block: "nearest" }); };
+      el.onclick = go; el.onkeydown = (e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), go());
+    });
+    const t = T[state.openTrend];
+    $("#trendDetail").innerHTML = t ? `<div class="trend-detail" style="--c:${t.color}">
+      <div class="td-grid"><div><div class="kicker" style="color:${t.color}">Evidence</div>
+        ${t.evidence.map((id) => byId[id]).filter(Boolean).map((i) => `<div class="ev"><span class="d">${short(i.date)}</span><span class="w">${esc(i.competitor)}</span><a href="${esc(i.url)}" target="_blank" rel="noopener">${esc(i.title)}</a></div>`).join("")}
+      </div><div>
+        <div class="so"><div class="k" style="color:#c9c2ff">Product marketing</div>${esc(t.pmm)}</div>
+        <div class="so"><div class="k" style="color:#5fd08f">Product</div>${esc(t.product)}</div>
+        <button class="btn sm" data-feedtrend="${t.id}">See all ${esc(t.name.toLowerCase())} moves →</button>
+      </div></div></div>` : "";
+    const ft = $("#trendDetail [data-feedtrend]");
+    if (ft) ft.onclick = () => { state.trends = new Set([ft.dataset.feedtrend]); state.period = "90d"; state.tab = "feed"; render(); scrollTo({ top: 0, behavior: "instant" }); };
+
+    renderMap(); renderMessaging(); renderRace(); renderMatrix();
+    $("#pmm").innerHTML = I.gmi.pmm.map((x) => `<li><span>${esc(x)}</span></li>`).join("");
+    $("#prod").innerHTML = I.gmi.product.map((x) => `<li><span>${esc(x)}</span></li>`).join("");
+    $("#watch").innerHTML = I.watch.map((w) => `<div class="card"><div class="date">${/^\d/.test(w.date) ? short(w.date).toUpperCase() : esc(w.date.toUpperCase())}</div><div class="what">${esc(w.what)}</div><div class="muted" style="font-size:12.5px">${esc(w.why)}</div></div>`).join("");
+  }
+
+  function renderMap() {
+    const W = 640, H = 440, L = 40, R = 620, TOP = 24, B = 400;
+    const X = (v) => L + (v / 100) * (R - L), Y = (v) => B - (v / 100) * (B - TOP);
+    const labelPos = { "Baseten": "left", "Fireworks AI": "below", "fal.ai": "left", "Cerebras": "below", "Groq": "above", "Novita AI": "left", "Together AI": "above", "Nebius": "below", "Crusoe": "below", "Lambda": "below" };
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Competitive positioning map">
+      <defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c9c2ff"/></marker>
+      <radialGradient id="glow"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
+      <rect x="${L}" y="${TOP}" width="${R - L}" height="${B - TOP}" rx="12" fill="rgba(255,255,255,.02)" stroke="rgba(255,255,255,.08)"/>
+      <line x1="${X(50)}" x2="${X(50)}" y1="${TOP}" y2="${B}" stroke="rgba(255,255,255,.1)" stroke-dasharray="4 4"/>
+      <line x1="${L}" x2="${R}" y1="${Y(50)}" y2="${Y(50)}" stroke="rgba(255,255,255,.1)" stroke-dasharray="4 4"/>
+      <text class="quad-label" x="${L + 12}" y="${TOP + 20}">Inference infra</text>
+      <text class="quad-label" x="${R - 12}" y="${TOP + 20}" text-anchor="end">Inference platforms &amp; models</text>
+      <text class="quad-label" x="${L + 12}" y="${B - 12}">Training infra</text>
+      <text class="quad-label" x="${R - 12}" y="${B - 12}" text-anchor="end">Training platforms</text>
+      <text class="axis-label" x="${(L + R) / 2}" y="${H - 14}" text-anchor="middle">Raw infrastructure  →  Platform &amp; models</text>
+      <text class="axis-label" transform="translate(14 ${(TOP + B) / 2}) rotate(-90)" text-anchor="middle">Training  →  Inference</text>`;
+    I.map.forEach((m) => { if (m.to) s += `<line x1="${X(m.x)}" y1="${Y(m.y)}" x2="${X(m.to[0])}" y2="${Y(m.to[1])}" stroke="#c9c2ff" stroke-opacity=".6" stroke-width="1.6" stroke-dasharray="3 3" marker-end="url(#arr)"/>`; });
+    I.map.forEach((m) => {
+      const x = X(m.x), y = Y(m.y), c = segColor[m.seg], gmi = m.seg === "gmi";
+      if (gmi) s += `<circle cx="${x}" cy="${y}" r="26" fill="url(#glow)"/>`;
+      s += `<circle cx="${x}" cy="${y}" r="${gmi ? 9 : 7}" fill="${c}" stroke="#0d1120" stroke-width="2.5" data-m="${esc(m.name)}" style="cursor:pointer"/>`;
+      const p = labelPos[m.name] || "right";
+      const [lx, ly, a] = p === "left" ? [x - 12, y + 4, "end"] : p === "above" ? [x, y - 13, "middle"] : p === "below" ? [x, y + 21, "middle"] : [x + 12, y + 4, "start"];
+      s += `<text class="map-name" x="${lx}" y="${ly}" text-anchor="${a}" ${gmi ? 'style="font-weight:800;font-size:13px"' : ""}>${esc(m.name)}</text>`;
+    });
+    $("#map").innerHTML = s + "</svg>";
+    $("#map").querySelectorAll("circle[data-m]").forEach((c) => {
+      const p = I.players.find((x) => x.name === c.dataset.m);
+      c.onmousemove = (e) => showTip(e, `<div class="t">${esc(c.dataset.m)}</div>${p ? `<div class="r">${esc(p.from)} → <b>${esc(p.to)}</b></div><div class="r">Betting on: ${esc(p.bet)}</div>` : '<div class="r">Full-stack: GPU Cloud · Cluster Engine · Inference Engine</div>'}`);
+      c.onmouseleave = hideTip;
+    });
+    $("#mapLegend").innerHTML = Object.keys(segColor).map((k) => `<span><i style="background:${segColor[k]}"></i>${segName[k]}</span>`).join("") + `<span><svg width="26" height="8"><line x1="0" y1="4" x2="20" y2="4" stroke="#c9c2ff" stroke-dasharray="3 3" stroke-width="1.6"/><path d="M19,0 L26,4 L19,8z" fill="#c9c2ff"/></svg>Direction</span>`;
+  }
+
+  function renderMessaging() {
+    $("#messaging").innerHTML = I.messaging.map((m) => `<div class="claim"><div><b>${esc(m.claim)}</b><div class="n">${esc(m.note)}</div></div>
+      <div class="chip-row">${m.who.map((w) => `<span class="pill"><span class="dot" style="background:${segColor[segOf[w]] || "#888"}"></span>${esc(w)}</span>`).join("")}</div></div>`).join("");
+  }
+
+  function renderRace() {
+    const r = I.dayZero; $("#raceTitle").textContent = r.model;
+    const days = [...new Set(r.hosts.map((h) => h.date))].sort();
+    const gap = Math.round((CI.parse(days[days.length - 1]) - CI.parse(days[0])) / 864e5);
+    $("#race").innerHTML = `<div style="display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center">
+      ${days.map((d, i) => `${i ? `<div style="text-align:center;color:#ff9b97;font-weight:800;font-size:13px">+${gap} days<div style="height:2px;width:70px;margin:4px auto;background:linear-gradient(90deg,#3987e5,#d55181)"></div></div>` : ""}
+        <div style="text-align:center"><div class="kicker" style="margin-bottom:8px">${short(d)}${i ? "" : " · day 0"}</div>
+        <div class="chip-row" style="justify-content:center">${r.hosts.filter((h) => h.date === d).map((h) => `<span class="pill" style="${i ? "border-color:rgba(255,155,151,.5)" : "border-color:rgba(95,208,143,.5)"}">${esc(h.name)}${h.note ? ` <span class="muted">· ${esc(h.note)}</span>` : ""}</span>`).join("")}</div></div>`).join("")}
+    </div>`;
+  }
+
+  function renderMatrix() {
+    const since = CI.addDays(today, -90);
+    const its = data.items.filter((i) => CI.parse(i.date) >= since);
+    const comps = data.competitors.map((c) => c.name).map((n) => ({ n, rows: I.trends.map((t) => its.filter((i) => i.competitor === n && (i.themes || []).includes(t.id))) }))
+      .map((r) => ({ ...r, total: r.rows.reduce((a, b) => a + b.length, 0) })).filter((r) => r.total).sort((a, b) => b.total - a.total);
+    const max = Math.max(1, ...comps.flatMap((r) => r.rows.map((x) => x.length)));
+    $("#matrix").innerHTML = `<thead><tr><th></th>${I.trends.map((t) => `<th><span class="hd"><i style="background:${t.color}">${t.icon}</i>${esc(t.short || t.name)}</span></th>`).join("")}</tr></thead><tbody>` +
+      comps.map((r) => `<tr><th>${esc(r.n)}</th>${r.rows.map((x, j) => {
+        if (!x.length) return `<td><span style="color:rgba(255,255,255,.15)">·</span></td>`;
+        const d = Math.round(10 + 16 * Math.sqrt(x.length / max));
+        return `<td><span class="bub" style="--c:${I.trends[j].color};width:${d}px;height:${d}px" data-c="${esc(r.n)}" data-t="${I.trends[j].id}"></span></td>`;
+      }).join("")}</tr>`).join("") + "</tbody>";
+    $("#matrix").querySelectorAll(".bub").forEach((b) => {
+      const list = its.filter((i) => i.competitor === b.dataset.c && (i.themes || []).includes(b.dataset.t));
+      b.onmousemove = (e) => showTip(e, `<div class="t">${esc(b.dataset.c)} · ${esc(T[b.dataset.t].name)}</div>${list.slice(0, 5).map((i) => `<div class="r">${short(i.date)} — ${esc(i.title)}</div>`).join("")}`);
+      b.onmouseleave = hideTip;
+      b.onclick = () => { hideTip(); state.comp = b.dataset.c; state.trends = new Set([b.dataset.t]); state.period = "90d"; state.tab = "feed"; render(); scrollTo({ top: 0, behavior: "instant" }); };
+    });
+  }
+
+  /* ================= PRODUCT LENS ================= */
+  const LINES = [["gpu", "GPU Cloud", "#3987e5"], ["cluster", "Cluster Engine", "#199e70"], ["inference", "Inference Engine", "#9085e9"], ["multi", "Cross-line", "#c98500"]];
+  const STATUS = (n) => n >= 4 ? ["Table stakes", "#e66767"] : n >= 2 ? ["Emerging", "#f0b545"] : ["Differentiator", "#5fd08f"];
+  const PRODUCT_CATS = new Set(["New Product", "Feature", "Pricing", "GPU/Hardware", "Infrastructure/Region", "Model Launch"]);
+  const ev = (e) => typeof e === "string" ? byId[e] : e;
+  function renderProduct() {
+    $("#prodTk").innerHTML = I.productTakeaways.map((t, i) => `<div class="tk" style="--kc:${["#e66767", "#f0b545", "#5fd08f"][i]}"><b>${["Table stakes", "Next wave", "Opening for GMI"][i]}</b>${esc(t)}</div>`).join("");
+    $("#capLegend").innerHTML = [["Table stakes", "4+ competitors", "#e66767"], ["Emerging", "2–3", "#f0b545"], ["Differentiator", "1 competitor", "#5fd08f"]].map(([a, b, c]) => `<span><i style="background:${c}"></i>${a} <span class="muted">(${b})</span></span>`).join("");
+    const total = data.competitors.length;
+    let h = "";
+    LINES.forEach(([lid, lname, lc]) => {
+      const caps = I.capabilities.filter((c) => c.line === lid).sort((a, b) => b.who.length - a.who.length);
+      if (!caps.length) return;
+      h += `<tr class="grp" style="--gc:#86b6ef"><td colspan="4">${esc(lname)}</td></tr>`;
+      caps.forEach((c) => {
+        const [st, sc] = STATUS(c.who.length);
+        h += `<tr style="--sc:${sc}"><td class="nm">${esc(c.name)}</td>
+          <td><div class="adopt" title="${c.who.length} of ${total} competitors">${Array.from({ length: total }, (_, i) => `<i class="${i < c.who.length ? "on" : ""}"></i>`).join("")}</div></td>
+          <td><span class="status">${st}</span></td>
+          <td><div class="who">${c.who.map(([n, e]) => { const it = ev(e); return it ? `<a href="${esc(it.url)}" target="_blank" rel="noopener" title="${esc(it.title)}">${esc(n)}</a>` : ""; }).join("")}</div></td></tr>`;
+      });
+    });
+    $("#capGrid").innerHTML = h;
+    renderLanes();
+    // direction table
+    const since = CI.addDays(today, -90);
+    const rows = data.competitors.map((c) => {
+      const its = data.items.filter((i) => i.competitor === c.name && PRODUCT_CATS.has(i.category) && CI.parse(i.date) >= since).sort((a, b) => b.date.localeCompare(a.date));
+      return { c, its, p: I.players.find((x) => x.name === c.name) };
+    }).filter((r) => r.its.length).sort((a, b) => b.its.length - a.its.length);
+    const mx = Math.max(1, ...rows.flatMap((r) => LINES.map(([l]) => r.its.filter((i) => i.product === l).length)));
+    $("#prodTable").innerHTML = `<thead><tr><th>Competitor</th><th>Direction</th><th>Moves by GMI line</th><th>Latest product move</th></tr></thead><tbody>` + rows.map((r) => `<tr>
+      <td><div style="display:flex;align-items:center;gap:10px">${avatar(r.c.name)}<b>${esc(r.c.name)}</b></div></td>
+      <td style="min-width:300px">${r.p ? `<div class="fromto" style="margin:0;flex-wrap:nowrap"><span class="a">${esc(r.p.from)}</span><span class="arr">→</span><span class="b">${esc(r.p.to)}</span></div>` : '<span class="muted">—</span>'}</td>
+      <td><div class="lines-mini">${LINES.map(([l, ln]) => { const n = r.its.filter((i) => i.product === l).length; return `<span>${esc(ln.replace(" Engine", "").replace("Cross-line", "Cross"))}</span><div class="bar"><span style="width:${(n / mx) * 100}%"></span></div><span class="n">${n}</span>`; }).join("")}</div></td>
+      <td><a href="${esc(r.its[0].url)}" target="_blank" rel="noopener">${esc(r.its[0].title)}</a><div class="muted" style="font-size:12px">${short(r.its[0].date)} · ${esc(r.its[0].category)}</div></td></tr>`).join("") + "</tbody>";
+  }
+
+  function renderLanes() {
+    const start = CI.parse("2026-09-14"), end = CI.addDays(today, 3);
+    const W = 1180, H = 330, L = 130, R = 1160, TOP = 18, rowH = 70;
+    const X = (d) => L + ((CI.parse(d) - start) / (end - start)) * (R - L);
+    const its = data.items.filter((i) => PRODUCT_CATS.has(i.category) && CI.parse(i.date) >= start).sort((a, b) => a.date.localeCompare(b.date));
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Product moves timeline by GMI product line">`;
+    for (let d = CI.weekStart(start); d <= end; d = CI.addDays(d, 7)) { const x = X(CI.isoDate(d)); if (x < L) continue; s += `<line x1="${x}" x2="${x}" y1="${TOP}" y2="${TOP + rowH * 4}" stroke="rgba(255,255,255,.06)"/><text class="axis-label" x="${x}" y="${TOP + rowH * 4 + 18}" text-anchor="middle">${short(CI.isoDate(d))}</text>`; }
+    LINES.forEach(([l, ln, lc], r) => {
+      const y0 = TOP + r * rowH;
+      s += `<rect x="${L}" y="${y0 + 4}" width="${R - L}" height="${rowH - 8}" rx="10" fill="#fff" fill-opacity="${r % 2 ? ".025" : ".05"}"/>`;
+      s += `<text x="${L - 14}" y="${y0 + rowH / 2 + 4}" text-anchor="end" fill="#f0efec" style="font-size:12.5px;font-weight:700">${esc(ln)}</text>`;
+      const seen = {};
+      its.filter((i) => i.product === l).forEach((i) => {
+        const k = i.date; const n = (seen[k] = (seen[k] || 0) + 1) - 1;
+        const off = [0, -11, 11, -22, 22, -5.5, 5.5, -16.5, 16.5][n % 9];
+        s += `<circle cx="${X(i.date)}" cy="${y0 + rowH / 2 + off}" r="${i.impact === "High" ? 8 : 6}" fill="${trendOf(i).color}" stroke="#0d1120" stroke-width="2" data-id="${esc(i.id)}" style="cursor:pointer"/>`;
+      });
+    });
+    const tx = X(CI.isoDate(today));
+    s += `<line x1="${tx}" x2="${tx}" y1="${TOP}" y2="${TOP + rowH * 4}" stroke="#fff" stroke-opacity=".5" stroke-dasharray="3 3"/><text x="${tx}" y="${TOP - 4}" text-anchor="middle" fill="#fff" style="font-size:10.5px;font-weight:700">TODAY</text>`;
+    $("#lanes").innerHTML = s + "</svg>";
+    $("#lanes").querySelectorAll("circle[data-id]").forEach((c) => {
+      const i = byId[c.dataset.id];
+      c.onmousemove = (e) => showTip(e, `<div class="t">${esc(i.competitor)} · ${short(i.date)}</div><div class="r">${esc(i.title)}</div><div class="r" style="color:#c9c2ff">${esc(i.takeaway_en || "")}</div>`);
+      c.onmouseleave = hideTip; c.onclick = () => open(i.url, "_blank", "noopener");
+    });
+    $("#lanesLegend").innerHTML = I.trends.map((t) => `<span><i style="background:${t.color}"></i>${esc(t.short)}</span>`).join("") + `<span class="muted">Large dot = high impact</span>`;
+  }
+
+  /* ================= MARKETING LENS ================= */
+  function renderMarketing() {
+    const kc = { Borrow: "#5fd08f", Counter: "#ff9b97", Own: "#c9c2ff" };
+    $("#mktTk").innerHTML = I.marketingTakeaways.map((t) => `<div class="tk" style="--kc:${kc[t.k]}"><b>${esc(t.k)}</b>${esc(t.t)}</div>`).join("");
+    renderMoments();
+    // tactic grid
+    const comps = data.competitors.map((c) => c.name).map((n) => ({ n, cells: I.tactics.map((t) => t.who.find(([w]) => w === n)) }))
+      .map((r) => ({ ...r, k: r.cells.filter(Boolean).length })).filter((r) => r.k).sort((a, b) => b.k - a.k);
+    $("#tacGrid").innerHTML = `<thead><tr><th></th>${I.tactics.map((t) => `<th><i>${t.icon}</i>${esc(t.name)}<div class="muted" style="font-weight:500;margin-top:3px">${t.who.length} players</div></th>`).join("")}<th>Tactics</th></tr></thead><tbody>` +
+      comps.map((r) => `<tr><th><div style="display:flex;align-items:center;gap:8px">${avatar(r.n, true)}${esc(r.n)}</div></th>${r.cells.map((c, j) => {
+        if (!c) return `<td><span style="color:rgba(255,255,255,.12)">·</span></td>`;
+        const it = ev(c[1]);
+        return `<td><span class="tdotm" data-url="${esc(it.url)}" data-tip="${esc(I.tactics[j].name)}" data-title="${esc(it.title)}" data-c="${esc(r.n)}"></span></td>`;
+      }).join("")}<td><span class="tcount">${r.k}</span></td></tr>`).join("") + "</tbody>";
+    $("#tacGrid").querySelectorAll(".tdotm").forEach((d) => {
+      d.onmousemove = (e) => showTip(e, `<div class="t">${esc(d.dataset.c)} · ${esc(d.dataset.tip)}</div><div class="r">${esc(d.dataset.title)}</div>`);
+      d.onmouseleave = hideTip; d.onclick = () => open(d.dataset.url, "_blank", "noopener");
+    });
+    // stories
+    const traffic = Object.fromEntries((I.traffic || []).map((t) => [t.name, t]));
+    $("#stories").innerHTML = data.competitors.filter((c) => I.stories[c.name]).map((c) => {
+      const p = I.players.find((x) => x.name === c.name);
+      const tac = I.tactics.filter((t) => t.who.some(([w]) => w === c.name));
+      const tr = traffic[c.name] || c.traffic;
+      return `<div class="story" style="--c:${segColor[segOf[c.name]] || "#6d6c66"}"><div class="head">${avatar(c.name)}<div><b>${esc(c.name)}</b><div class="muted" style="font-size:12px">${esc(c.segment)}</div></div></div>
+        ${p ? `<div class="tl">Homepage: “${esc(p.tagline)}”</div>` : `<div class="tl">&nbsp;</div>`}
+        <div class="st">${esc(I.stories[c.name])}</div>
+        <div class="chip-row">${tac.length ? tac.map((t) => `<span class="pill" style="padding:2px 8px;font-size:11px">${t.icon} ${esc(t.name)}</span>`).join("") : '<span class="muted" style="font-size:12px">No visible campaigns this quarter</span>'}</div>
+        ${tr && tr.visits ? `<div class="chip-row" style="margin-top:8px"><span class="pill">🌐 ${esc(tr.visits)} visits · ${esc(tr.month)}</span>${tr.mom ? `<span class="pill" style="color:${/^-/.test(tr.mom) ? "#ff9b97" : "#5fd08f"}">${esc(tr.mom)} MoM</span>` : ""}</div>` : ""}
+      </div>`;
+    }).join("");
+  }
+
+  function renderMoments() {
+    const start = CI.parse("2026-09-15"), end = CI.parse("2026-11-16");
+    const W = 1180, H = 330, L = 90, R = 1110, Y = 160;
+    const X = (d) => L + ((CI.parse(d) - start) / (end - start)) * (R - L);
+    const LY = { 2: Y - 122, 1: Y - 66, "-1": Y + 44, "-2": Y + 100 };
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Marketing moments timeline">
+      <defs><linearGradient id="mg" x1="0" x2="1"><stop offset="0" stop-color="#3987e5"/><stop offset=".55" stop-color="#9085e9"/><stop offset="1" stop-color="#d55181"/></linearGradient></defs>`;
+    ["2026-10-01", "2026-11-01"].forEach((m) => { const x = X(m); s += `<line x1="${x}" x2="${x}" y1="20" y2="${H - 22}" stroke="rgba(255,255,255,.06)"/><text class="axis-label" x="${x}" y="${H - 6}" text-anchor="middle" style="font-weight:700;letter-spacing:1px">${short(m).split(" ")[0].toUpperCase()}</text>`; });
+    const tx = X(CI.isoDate(today));
+    s += `<line x1="${tx}" x2="${tx}" y1="20" y2="${H - 22}" stroke="#fff" stroke-opacity=".35" stroke-dasharray="3 3"/><text x="${tx}" y="13" text-anchor="middle" fill="#fff" fill-opacity=".75" style="font-size:10.5px;font-weight:700">TODAY</text>`;
+    s += `<line x1="${L - 40}" x2="${R + 40}" y1="${Y}" y2="${Y}" stroke="url(#mg)" stroke-width="3" stroke-linecap="round"/>`;
+    I.moments.forEach((m) => {
+      const x = X(m.date), up = m.lvl > 0, future = CI.parse(m.date) > today, ly = LY[m.lvl];
+      s += `<line x1="${x}" x2="${x}" y1="${Y}" y2="${up ? ly + 34 : ly - 14}" stroke="rgba(255,255,255,.22)"/>`;
+      s += `<circle cx="${x}" cy="${Y}" r="7" fill="${future ? "#0d1120" : "#fff"}" stroke="${future ? "#d55181" : "#9085e9"}" stroke-width="3"/>`;
+      s += `<text x="${x}" y="${ly}" text-anchor="middle" style="font-size:12.5px;font-weight:700" fill="#fff">${esc(m.label)}</text>
+            <text x="${x}" y="${ly + 15}" text-anchor="middle" class="axis-label">${short(m.date)} · ${esc(m.who)}</text>
+            <text x="${x}" y="${ly + 29}" text-anchor="middle" style="font-size:11px" fill="#c9c2ff">${esc(m.note)}</text>`;
+    });
+    $("#moments").innerHTML = s + "</svg>";
+  }
+
+  /* ================= PLAYERS ================= */
+  function renderPlayers() {
+    const traffic = Object.fromEntries((I.traffic || []).map((t) => [t.name, t]));
+    const names = [...I.players.map((p) => p.name), ...data.competitors.map((c) => c.name).filter((n) => !I.players.some((p) => p.name === n))];
+    $("#players").innerHTML = names.map((n) => {
+      const p = I.players.find((x) => x.name === n), c = data.competitors.find((x) => x.name === n) || {};
+      const moves = data.items.filter((i) => i.competitor === n).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3);
+      const tr = traffic[n] || c.traffic;
+      const meter = (lbl, v) => `<span>${lbl}</span><div class="meter l${v}"><i></i><i></i><i></i></div>`;
+      return `<div class="card player">
+        <div class="top">${avatar(n)}<div><h3>${esc(n)}</h3><div class="muted" style="font-size:12px">${esc(c.segment || "")}</div></div><div class="spacer"></div>${c.site ? `<a class="btn sm" href="${esc(c.site)}" target="_blank" rel="noopener">News ↗</a>` : ""}</div>
+        ${p ? `<div class="tagline">${esc(p.tagline)}</div>
+        <div class="fromto"><span class="a">${esc(p.from)}</span><span class="arr">→</span><span class="b">${esc(p.to)}</span></div>
+        <div style="font-size:12.5px;color:var(--text-2)"><b style="color:#fff">Betting on:</b> ${esc(p.bet)}</div>
+        <div class="threat">${meter("GPU Cloud", p.threat.gpu)}${meter("Cluster Engine", p.threat.cluster)}${meter("Inference", p.threat.inference)}</div>
+        <div class="read">${esc(p.read)}</div>` : `<div class="read" style="margin-top:12px">${esc(c.note_en || "No significant moves in the tracking window.")}</div>`}
+        ${tr && tr.visits ? `<div class="chip-row" style="margin-top:10px"><span class="pill">🌐 ${esc(tr.visits)} visits · ${esc(tr.month)}</span>${tr.mom ? `<span class="pill" style="color:${/^-/.test(tr.mom) ? "#ff9b97" : "#5fd08f"}">${esc(tr.mom)} MoM</span>` : ""}${tr.topCountry ? `<span class="pill">${esc(tr.topCountry)}</span>` : ""}</div>` : ""}
+        ${moves.length ? `<ul class="moves">${moves.map((i) => `<li data-url="${esc(i.url)}"><span class="tdot" style="background:${trendOf(i).color}"></span><span class="d">${short(i.date)}</span><span>${esc(i.title)}</span></li>`).join("")}</ul>` : ""}
+      </div>`;
+    }).join("");
+    $("#players").querySelectorAll("li[data-url]").forEach((li) => (li.onclick = () => open(li.dataset.url, "_blank", "noopener")));
+  }
+
+  /* ================= FEED ================= */
+  $("#fComp").innerHTML = `<option value="">All competitors</option>` + data.competitors.map((c) => `<option>${esc(c.name)}</option>`).join("");
+  $("#trendChips").innerHTML = I.trends.map((t) => `<span class="tchip" style="--c:${t.color}" data-t="${t.id}"><i></i>${esc(t.name)}</span>`).join("");
+  $("#trendChips").onclick = (e) => { const c = e.target.closest("[data-t]"); if (!c) return; state.trends.has(c.dataset.t) ? state.trends.delete(c.dataset.t) : state.trends.add(c.dataset.t); render(); };
+  $("#periodSeg").onclick = (e) => { if (e.target.dataset.p) { state.period = e.target.dataset.p; render(); } };
+  $("#fComp").oninput = (e) => { state.comp = e.target.value; render(); };
+  $("#fImp").oninput = (e) => { state.imp = e.target.value; render(); };
+  $("#fQ").oninput = (e) => { state.q = e.target.value; render(); };
+  $("#reset").onclick = () => { Object.assign(state, { period: "30d", comp: "", imp: "", q: "", trends: new Set() }); render(); };
+
+  function feedItems() {
+    const [a, b] = CI.periodRange(state.period, today);
+    return data.items.filter((i) => { const d = CI.parse(i.date); return d >= a && d <= b; })
+      .filter((i) => !state.comp || i.competitor === state.comp)
+      .filter((i) => !state.imp || i.impact === state.imp)
+      .filter((i) => !state.trends.size || (i.themes || []).some((t) => state.trends.has(t)))
+      .filter((i) => !state.q || [i.title, i.takeaway_en, i.competitor].join(" ").toLowerCase().includes(state.q.toLowerCase()))
+      .sort((x, y) => y.date.localeCompare(x.date));
+  }
+  function renderFeed() {
+    const [a, b, label] = CI.periodRange(state.period, today);
+    $("#rangeLabel").textContent = state.period === "all" ? "" : `${label}: ${short(CI.isoDate(a))} – ${short(CI.isoDate(b))}`;
+    $("#trendChips").querySelectorAll(".tchip").forEach((c) => c.classList.toggle("on", state.trends.has(c.dataset.t)));
+    $("#periodSeg").querySelectorAll("button").forEach((x) => x.classList.toggle("active", x.dataset.p === state.period));
+    $("#fComp").value = state.comp; $("#fImp").value = state.imp; $("#fQ").value = state.q;
+    const items = feedItems();
+    $("#feed").innerHTML = items.length ? items.map((i) => { const t = trendOf(i); return `<div class="fitem" style="--c:${t.color}">
+      <div class="meta"><b>${esc(i.competitor)}</b><span>${short(i.date)}</span><span class="imp ${esc(i.impact)}">${esc(i.impact)}</span>
+        ${(i.themes || []).map((x) => T[x] ? `<span class="pill" style="padding:1px 8px"><span class="dot" style="background:${T[x].color}"></span>${esc(T[x].name)}</span>` : "").join("")}</div>
+      <a class="ttl" href="${esc(i.url)}" target="_blank" rel="noopener">${esc(i.title)}</a>
+      <div class="why">${esc(i.takeaway_en || "")}</div></div>`; }).join("")
+      : `<div class="empty" style="grid-column:1/-1">No moves match these filters.</div>`;
+  }
+
+  /* ================= brief + shell ================= */
+  function toast(m) { const t = $("#toast"); t.textContent = m; t.style.display = "block"; clearTimeout(t._h); t._h = setTimeout(() => (t.style.display = "none"), 2200); }
+  $("#copyBrief").onclick = async () => {
+    let md = `**GMI Competitive Radar · ${I.period}**\n${I.headline}\n\n`;
+    I.trends.forEach((t, n) => { md += `**${n + 1}. ${t.name}** — ${t.oneLiner}\n  • PMM: ${t.pmm}\n  • Product: ${t.product}\n`; });
+    md += `\n**GMI playbook**\n` + I.gmi.pmm.map((x) => `• PMM: ${x}`).join("\n") + "\n" + I.gmi.product.map((x) => `• Product: ${x}`).join("\n") + "\n";
+    try { await navigator.clipboard.writeText(md); toast("Brief copied. Paste into Slack or email."); } catch { CI.download("gmi-competitive-brief.md", md); toast("Downloaded gmi-competitive-brief.md"); }
+  };
+  $("#tabs").onclick = (e) => { if (e.target.dataset.tab) { state.tab = e.target.dataset.tab; render(); scrollTo({ top: 0, behavior: "instant" }); } };
+  function render() {
+    document.querySelectorAll("#tabs button").forEach((b) => b.classList.toggle("active", b.dataset.tab === state.tab));
+    ["insights", "product", "marketing", "players", "feed"].forEach((t) => $("#v-" + t).classList.toggle("hidden", t !== state.tab));
+    ({ insights: renderInsights, product: renderProduct, marketing: renderMarketing, players: renderPlayers, feed: renderFeed })[state.tab]();
+  }
+  $("#foot").textContent = `Data updated ${data.updatedAt} · Analysis updated ${I.updated} · Sources: competitors' official newsrooms and blogs, Similarweb public estimates${isDraft ? " · Local draft" : ""}`;
+  render();
+})();
+</script>
+</body>
+</html>

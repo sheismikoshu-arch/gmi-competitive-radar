@@ -1,0 +1,23 @@
+[
+  {"competitor":"Cerebras","date":"2026-10-27","category":"Partnership","product":"inference","impact":"High",
+   "title":"Cerebras and Oracle team up to bring Cerebras AI inference to Oracle Cloud Infrastructure",
+   "title_zh":"Cerebras 与 Oracle 合作，在 OCI 上提供 Cerebras 高速推理",
+   "summary_zh":"Cerebras 与 Oracle 宣布计划在 Oracle Cloud Infrastructure 上为 AI 实验室、企业和开发者提供 Cerebras 高速推理，用于对延迟敏感的多步 Agent 应用。",
+   "takeaway_zh":"超大云正在引入专用推理芯片，“推理速度”的叙事被大厂渠道放大。GMI 需要准备 GPU 推理在延迟与成本上的对比口径。",
+   "source":"Cerebras Newsroom","url":"https://www.cerebras.ai/press-release/cerebras-and-oracle-team-up-to-bring-cerebras-ai-inference-to-oracle-cloud-inf-3389429",
+   "tags":["Oracle","超大云渠道","低延迟"],"verified":true},
+  {"competitor":"Cerebras","date":"2026-10-20","category":"Funding/Financials","product":"inference","impact":"Low",
+   "title":"Cerebras to report Q3 2026 results on November 12",
+   "title_zh":"Cerebras 将于 11 月 12 日发布 2026 Q3 财报",
+   "summary_zh":"Cerebras（NASDAQ: CBRS）将于 11 月 12 日美股收盘后发布第三季度财报并召开电话会议。",
+   "takeaway_zh":"11/12 财报可以公开了解其推理云业务的规模与增长，建议届时补充收录。",
+   "source":"Cerebras Newsroom","url":"https://www.cerebras.ai/press-release/cerebras-systems-announces-date-of-third-quarter-2026-financial-results-3384934",
+   "tags":["财报","上市公司"],"verified":true},
+  {"competitor":"Cerebras","date":"2026-09-29","category":"Partnership","product":"inference","impact":"Medium",
+   "title":"General Compute selects Cerebras to bring ultra-fast inference to agentic coding",
+   "title_zh":"Neocloud General Compute 选择 Cerebras，为编码 Agent 提供高速推理",
+   "summary_zh":"专门部署替代芯片的 Neocloud General Compute 与 Cerebras 签订多年协议，首个场景是 Agent 编码：编码 Agent 需要大量串行推理调用，速度优势会被放大。",
+   "takeaway_zh":"Cerebras 正通过第三方 Neocloud 和超大云扩大分发，编码 Agent 是各家推理厂商的共同主战场。",
+   "source":"Cerebras Newsroom","url":"https://www.cerebras.ai/press-release/general-compute-selects-cerebras-to-bring-ultra-fast-inference-to-agentic-coding",
+   "tags":["编码 Agent","渠道"],"verified":true}
+]
